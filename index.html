@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Wiscode — Second Brain</title>
+  <link rel="stylesheet" href="style.css" />
+    <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#112a34" />
+
+</head>
+<body>
+  <div class="app-shell">
+    <!-- TOP HEADER -->
+    <header class="top-bar">
+      <div>
+        <p class="eyebrow" id="greetingEyebrow">Good evening</p>
+        <h1 class="page-title" id="pageTitle">Let's stay <span class="accent">Productive</span></h1>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="themeToggleBtn" aria-label="Toggle dark mode" title="Toggle theme">
+          <span id="themeIcon">🌙</span>
+        </button>
+        <button class="avatar-btn" id="headerAvatar" data-nav="profile" aria-label="Open profile">
+          OW
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="main-content">
+      <!-- 1. HOME SCREEN -->
+      <section id="screen-home" class="screen active">
+        <div class="hero-card">
+          <div class="hero-info">
+            <span class="hero-eyebrow" id="heroCountLabel">0 OF 0 COMPLETED</span>
+            <h2 class="hero-heading" id="heroMessage">Tap + to add your first task for today.</h2>
+            <button class="btn-amber" id="heroPendingBtn">View Pending Tasks</button>
+          </div>
+          <div class="hero-ring-wrap">
+            <svg class="progress-ring" width="88" height="88">
+              <circle class="ring-bg" cx="44" cy="44" r="39" />
+              <circle class="ring-fill" id="heroRingFill" cx="44" cy="44" r="39" />
+            </svg>
+            <span class="ring-text" id="heroPercent">0%</span>
+          </div>
+        </div>
+
+        <div class="quick-actions">
+          <button class="qa-card" id="qaAddTask">
+            <span class="qa-icon">+</span>
+            <span class="qa-label">Add Task</span>
+          </button>
+          <button class="qa-card" id="qaCategories">
+            <span class="qa-icon">🏷️</span>
+            <span class="qa-label">Categories</span>
+          </button>
+          <button class="qa-card" data-nav="calendar">
+            <span class="qa-icon">📅</span>
+            <span class="qa-label">Calendar</span>
+          </button>
+          <button class="qa-card" id="qaPending">
+            <span class="qa-icon">⏳</span>
+            <span class="qa-label">Pending</span>
+          </button>
+        </div>
+
+        <div class="section-header">
+          <h3>Today's Schedule</h3>
+          <button class="link-btn" data-nav="calendar">Full timeline →</button>
+        </div>
+        <div id="homeBentoGrid" class="bento-grid"></div>
+
+        <div class="section-header">
+          <h3>Upcoming Tasks</h3>
+          <button class="link-btn" data-nav="tasks">View all →</button>
+        </div>
+        <div id="upcomingList" class="task-list"></div>
+      </section>
+
+      <!-- 2. CALENDAR SCREEN -->
+      <section id="screen-calendar" class="screen">
+        <div class="calendar-card">
+          <div class="cal-header">
+            <button class="icon-btn" id="prevMonthBtn">‹</button>
+            <h3 id="calMonthLabel">Month Year</h3>
+            <button class="icon-btn" id="nextMonthBtn">›</button>
+          </div>
+          <div class="cal-weekdays">
+            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+          </div>
+          <div id="calDaysGrid" class="cal-days"></div>
+        </div>
+
+        <div class="section-header">
+          <h3 id="selectedDateLabel">Schedule</h3>
+          <button class="link-btn" id="calAddBtn">+ Add</button>
+        </div>
+        <div id="dayTimelineList" class="timeline-list"></div>
+      </section>
+
+      <!-- 3. ALL TASKS SCREEN -->
+      <section id="screen-tasks" class="screen">
+        <div class="filter-bar">
+          <input type="search" id="taskSearchInput" placeholder="Search tasks..." />
+          <div class="filter-row">
+            <select id="filterStatus">
+              <option value="all">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="completed">Completed</option>
+            </select>
+            <select id="filterCategory">
+              <option value="all">All Categories</option>
+            </select>
+            <select id="filterPriority">
+              <option value="all">All Priorities</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+        </div>
+        <div id="allTasksList" class="task-list"></div>
+      </section>
+
+      <!-- 4. INSIGHTS SCREEN -->
+      <section id="screen-insights" class="screen">
+        <div class="stats-grid">
+          <div class="stat-box">
+            <span class="stat-val" id="insTotal">0</span>
+            <span class="stat-lbl">Total Tasks</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-val" id="insCompleted">0</span>
+            <span class="stat-lbl">Completed</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-val" id="insPending">0</span>
+            <span class="stat-lbl">Pending</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-val" id="insRate">0%</span>
+            <span class="stat-lbl">Completion</span>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <h3>Category Breakdown</h3>
+          <div id="categoryBreakdown" class="cat-breakdown"></div>
+        </div>
+      </section>
+
+      <!-- 5. PROFILE & SETTINGS SCREEN -->
+      <section id="screen-profile" class="screen">
+        <div class="profile-card">
+          <div class="profile-avatar-wrap">
+            <div class="profile-avatar-lg" id="profileAvatarLg">OW</div>
+            <label for="avatarUploadInput" class="upload-badge" title="Upload profile photo">📷</label>
+            <input type="file" id="avatarUploadInput" accept="image/*" hidden />
+          </div>
+          <h2 id="profileDisplayName">Onyedika Wisdom</h2>
+          <p class="muted-text">Wiscode Innovations • Second Brain</p>
+        </div>
+
+        <div class="settings-group">
+          <div class="setting-item">
+            <div>
+              <div class="setting-title">Display Name</div>
+              <div class="setting-desc">Shown in your greeting and avatar</div>
+            </div>
+            <input type="text" id="settingsNameInput" class="setting-input" />
+          </div>
+
+          <div class="setting-item">
+            <div>
+              <div class="setting-title">Appearance</div>
+              <div class="setting-desc">Switch between Light and Dark mode</div>
+            </div>
+            <button class="btn-outline" id="settingsThemeBtn">Toggle Theme</button>
+          </div>
+
+          <div class="setting-item">
+            <div>
+              <div class="setting-title">Remove Profile Photo</div>
+              <div class="setting-desc">Revert back to initials badge</div>
+            </div>
+            <button class="btn-outline" id="removeAvatarBtn">Reset Photo</button>
+          </div>
+
+          <div class="setting-item">
+            <div>
+              <div class="setting-title">Clear All Tasks</div>
+              <div class="setting-desc">Permanently erase saved tasks</div>
+            </div>
+            <button class="btn-danger" id="clearAllBtn">Clear Data</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- BOTTOM NAVIGATION -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-nav="home">
+        <span class="nav-icon">⊞</span>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" data-nav="calendar">
+        <span class="nav-icon">📅</span>
+        <span>Calendar</span>
+      </button>
+      <button class="nav-add-btn" id="mobileAddBtn" aria-label="Add new task">+</button>
+      <button class="nav-item" data-nav="insights">
+        <span class="nav-icon">📊</span>
+        <span>Insights</span>
+      </button>
+      <button class="nav-item" data-nav="profile">
+        <span class="nav-icon">👤</span>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- TASK MODAL -->
+  <div class="modal-backdrop" id="taskModalBackdrop">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 id="modalTitle">New Task</h3>
+        <button class="icon-btn" id="closeModalBtn">✕</button>
+      </div>
+      <form id="taskForm">
+        <input type="hidden" id="taskIdInput" />
+        <label class="field">
+          <span>Title *</span>
+          <input type="text" id="taskTitleInput" required placeholder="Enter task title..." />
+        </label>
+        <label class="field">
+          <span>Notes</span>
+          <textarea id="taskDescInput" rows="2" placeholder="Optional details..."></textarea>
+        </label>
+        <div class="field-row">
+          <label class="field">
+            <span>Date</span>
+            <input type="date" id="taskDateInput" required />
+          </label>
+          <label class="field">
+            <span>Category</span>
+            <select id="taskCategoryInput"></select>
+          </label>
+        </div>
+        <div class="field-row">
+          <label class="field">
+            <span>Start Time</span>
+            <input type="time" id="taskStartInput" />
+          </label>
+          <label class="field">
+            <span>End Time</span>
+            <input type="time" id="taskEndInput" />
+          </label>
+        </div>
+        <div class="field-row">
+          <label class="field">
+            <span>Priority</span>
+            <select id="taskPriorityInput">
+              <option value="High">High</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Status</span>
+            <select id="taskStatusInput">
+              <option value="pending">Pending</option>
+              <option value="completed">Completed</option>
+            </select>
+          </label>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-danger" id="deleteTaskBtn" style="display: none;">Delete</button>
+          <button type="submit" class="btn-primary">Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- CATEGORY MODAL -->
+  <div class="modal-backdrop" id="catModalBackdrop">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3>Categories</h3>
+        <button class="icon-btn" id="closeCatModalBtn">✕</button>
+      </div>
+      <div class="cat-capsule-input">
+        <input type="text" id="newCategoryInput" placeholder="New category name..." />
+        <button type="button" class="cat-capsule-btn" id="addCategoryBtn">+ Add</button>
+      </div>
+      <div id="categoryChipsList" class="cat-deck"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="script.js"></script>
+        <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js');
+    }
+  </script>
+</body>
+</html>
